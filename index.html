@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Admission Management System</title>
+    <!-- Google Fonts & Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #3b82f6;
+            --primary-dark: #172554;
+            --accent: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Banner */
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            color: white;
+            padding: 1.25rem 2rem;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-icon {
+            font-size: 2.2rem;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.6rem;
+            border-radius: 12px;
+        }
+
+        .header-text h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        .header-text p {
+            font-size: 0.85rem;
+            color: #93c5fd;
+            font-weight: 400;
+        }
+
+        .header-badges {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .badge-live {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid #10b981;
+            color: #34d399;
+            padding: 0.4rem 0.8rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .badge-pulse {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        /* Navigation Tabs */
+        nav.nav-tabs {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem;
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            outline: none;
+            padding: 1rem 1.25rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        /* Main Container */
+        main.content-area {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards & Grids */
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-header h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.4rem;
+        }
+
+        input[type="text"], input[type="email"], input[type="tel"], input[type="date"], input[type="number"], select {
+            width: 100%;
+            padding: 0.65rem 0.85rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            background: white;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        /* Merit Score Highlight Box */
+        .merit-highlight {
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            border: 2px dashed #10b981;
+            border-radius: 10px;
+            padding: 1.2rem;
+            text-align: center;
+            margin: 1.2rem 0;
+        }
+
+        .merit-highlight .formula {
+            font-size: 0.8rem;
+            color: #065f46;
+            margin-bottom: 0.4rem;
+        }
+
+        .merit-highlight .score-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #047857;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-success {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: var(--text-dark);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        /* Tables */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: var(--text-dark);
+            font-weight: 700;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: #f8fafc;
+        }
+
+        /* Status Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-allocated, .badge-approved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-waitlisted {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .badge-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Footer */
+        footer {
+            background: white;
+            border-top: 1px solid var(--border);
+            padding: 1.25rem 2rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: auto;
+        }
+
+        /* Toast Alert */
+        #toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1e293b;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            display: none;
+            z-index: 1000;
+            font-size: 0.9rem;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Banner -->
+    <header>
+        <div class="header-title">
+            <div class="header-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+            <div class="header-text">
+                <h1>College Admission Management System</h1>
+                <p>Academic Admissions Portal, Course Allocation & Merit Engine</p>
+            </div>
+        </div>
+        <div class="header-badges">
+            <span class="badge-live"><span class="badge-pulse"></span> Web Portal Active</span>
+            <a href="https://github.com/sumanthKateboina/CollegeAdmissionManagementSystem-" target="_blank" class="btn btn-secondary" style="color: white; background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3);">
+                <i class="fa-brands fa-github"></i> GitHub Repo
+            </a>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('register')"><i class="fa-solid fa-user-plus"></i> Student Registration</button>
+        <button class="tab-btn" onclick="switchTab('courses')"><i class="fa-solid fa-book-open"></i> Courses & Cut-offs</button>
+        <button class="tab-btn" onclick="switchTab('merit')"><i class="fa-solid fa-ranking-star"></i> Merit Ranking & Auto-Allocation</button>
+        <button class="tab-btn" onclick="switchTab('admin')"><i class="fa-solid fa-shield-halved"></i> Admin Review Panel</button>
+        <button class="tab-btn" onclick="switchTab('reports')"><i class="fa-solid fa-file-export"></i> Admission Reports & Exports</button>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="content-area">
+
+        <!-- TAB 1: STUDENT REGISTRATION -->
+        <section id="tab-register" class="tab-content active">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-user-graduate"></i> Student Application & Registration Form</h2>
+                    <span style="font-size: 0.85rem; color: var(--text-muted);"><i class="fa-solid fa-circle-info"></i> All fields marked (*) are mandatory</span>
+                </div>
+
+                <form id="studentForm" onsubmit="handleRegistration(event)">
+                    <div class="grid-2">
+                        <!-- Left: Personal Info -->
+                        <div>
+                            <h3 style="font-size: 1rem; margin-bottom: 1rem; color: var(--primary);"><i class="fa-regular fa-address-card"></i> Candidate Personal Details</h3>
+                            <div class="form-group">
+                                <label for="fullName">Full Name *</label>
+                                <input type="text" id="fullName" placeholder="e.g. Sumanth Kateboina" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address *</label>
+                                <input type="email" id="email" placeholder="e.g. sumanth@example.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number *</label>
+                                <input type="tel" id="phone" placeholder="e.g. 9876543210" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="dob">Date of Birth *</label>
+                                <input type="date" id="dob" required>
+                            </div>
+                            <div class="grid-2" style="gap: 1rem; margin-bottom: 0;">
+                                <div class="form-group">
+                                    <label for="gender">Gender</label>
+                                    <select id="gender">
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="category">Category</label>
+                                    <select id="category">
+                                        <option value="General">General</option>
+                                        <option value="OBC">OBC</option>
+                                        <option value="SC">SC</option>
+                                        <option value="ST">ST</option>
+                                        <option value="EWS">EWS</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Academic & Preferences -->
+                        <div>
+                            <h3 style="font-size: 1rem; margin-bottom: 1rem; color: var(--primary);"><i class="fa-solid fa-award"></i> Academic Qualifications & Exam Scores</h3>
+                            <div class="form-group">
+                                <label for="score10th">10th Standard Marks % (Weight: 20%) *</label>
+                                <input type="number" id="score10th" step="0.01" min="0" max="100" placeholder="0.00 - 100.00" value="88.50" oninput="calculateLiveMerit()" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="score12th">12th Standard Marks % (Weight: 30%) *</label>
+                                <input type="number" id="score12th" step="0.01" min="0" max="100" placeholder="0.00 - 100.00" value="91.00" oninput="calculateLiveMerit()" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="entranceScore">Entrance Examination Score % (Weight: 50%) *</label>
+                                <input type="number" id="entranceScore" step="0.01" min="0" max="100" placeholder="0.00 - 100.00" value="94.00" oninput="calculateLiveMerit()" required>
+                            </div>
+
+                            <!-- Live Merit Calculation -->
+                            <div class="merit-highlight">
+                                <div class="formula">Merit Score = (10th × 20%) + (12th × 30%) + (Entrance × 50%)</div>
+                                <div class="score-value" id="liveMerit">92.00 %</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="prefCourse1">1st Preference Course *</label>
+                                <select id="prefCourse1" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="prefCourse2">2nd Preference Course (Optional)</label>
+                                <select id="prefCourse2"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 1.5rem; text-align: center; display: flex; justify-content: center; gap: 1rem;">
+                        <button type="submit" class="btn btn-primary" style="padding: 0.8rem 2rem; font-size: 1rem;">
+                            <i class="fa-solid fa-paper-plane"></i> Submit Application
+                        </button>
+                        <button type="reset" class="btn btn-secondary" onclick="setTimeout(calculateLiveMerit, 50)">
+                            <i class="fa-solid fa-rotate-left"></i> Reset Form
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- TAB 2: COURSES & CUT-OFFS -->
+        <section id="tab-courses" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-book"></i> Academic Courses & Cut-off Thresholds</h2>
+                    <button class="btn btn-primary" onclick="promptAddCourse()"><i class="fa-solid fa-plus"></i> Add New Course</button>
+                </div>
+                <div class="table-responsive">
+                    <table id="coursesTable">
+                        <thead>
+                            <tr>
+                                <th>Course ID</th>
+                                <th>Course Title</th>
+                                <th>Total Seats</th>
+                                <th>Available Seats</th>
+                                <th>Minimum Cut-off %</th>
+                                <th>Duration</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: MERIT LIST & AUTO ALLOCATION -->
+        <section id="tab-merit" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-ranking-star"></i> Ranked Merit List & Application Status</h2>
+                    <div style="display: flex; gap: 0.75rem;">
+                        <button class="btn btn-success" onclick="runAutoAllocation()"><i class="fa-solid fa-gears"></i> Run Automated Seat Allocation</button>
+                        <button class="btn btn-secondary" onclick="resetAllocations()"><i class="fa-solid fa-arrow-rotate-left"></i> Reset Allocations</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table id="applicationsTable">
+                        <thead>
+                            <tr>
+                                <th>App ID</th>
+                                <th>Rank</th>
+                                <th>Student Name</th>
+                                <th>Category</th>
+                                <th>Merit Score %</th>
+                                <th>Applied Course</th>
+                                <th>Cut-off %</th>
+                                <th>Status</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: ADMIN DECISION PANEL -->
+        <section id="tab-admin" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-user-shield"></i> Administrator Decision & Override Panel</h2>
+                    <span style="font-size: 0.85rem; color: var(--text-muted);">Inspect individual student applications and override admission status</span>
+                </div>
+                <div class="table-responsive">
+                    <table id="adminTable">
+                        <thead>
+                            <tr>
+                                <th>App ID</th>
+                                <th>Student Name</th>
+                                <th>Category</th>
+                                <th>Course</th>
+                                <th>Merit Score</th>
+                                <th>Course Cutoff</th>
+                                <th>Current Status</th>
+                                <th>Admin Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: REPORTS & EXPORTS -->
+        <section id="tab-reports" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-file-invoice"></i> Official Admission List (Allocated Students)</h2>
+                    <div style="display: flex; gap: 0.75rem;">
+                        <button class="btn btn-primary" onclick="exportAdmissionCSV()"><i class="fa-solid fa-file-csv"></i> Export Admission CSV</button>
+                        <button class="btn btn-secondary" onclick="exportMeritCSV()"><i class="fa-solid fa-file-csv"></i> Export Merit CSV</button>
+                        <button class="btn btn-success" onclick="exportAdmissionPDF()"><i class="fa-solid fa-file-pdf"></i> Download Official PDF</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table id="reportsTable">
+                        <thead>
+                            <tr>
+                                <th>Admit Rank</th>
+                                <th>App ID</th>
+                                <th>Student Name</th>
+                                <th>Category</th>
+                                <th>Course Code</th>
+                                <th>Allocated Course Name</th>
+                                <th>Merit Score %</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast">Notification Message</div>
+
+    <!-- Footer -->
+    <footer>
+        <p><strong>College Admission Management System</strong> &bull; Built with Java, JDBC, MySQL & Web Architecture &bull; &copy; 2026 Sumanth Kateboina</p>
+    </footer>
+
+    <script>
+        // Default In-Memory / LocalStorage State
+        let courses = JSON.parse(localStorage.getItem('cams_courses')) || [
+            { id: "CS101", name: "Computer Science & Engineering", totalSeats: 5, availableSeats: 5, cutoff: 85.00, duration: 4 },
+            { id: "IT102", name: "Information Technology", totalSeats: 5, availableSeats: 5, cutoff: 80.00, duration: 4 },
+            { id: "EC103", name: "Electronics & Communication", totalSeats: 4, availableSeats: 4, cutoff: 75.00, duration: 4 },
+            { id: "ME104", name: "Mechanical Engineering", totalSeats: 3, availableSeats: 3, cutoff: 70.00, duration: 4 },
+            { id: "DS105", name: "Data Science & Artificial Intelligence", totalSeats: 4, availableSeats: 4, cutoff: 88.00, duration: 4 }
+        ];
+
+        let applications = JSON.parse(localStorage.getItem('cams_applications')) || [
+            { appId: 1, name: "Ananya Iyer", email: "ananya.iyer@example.com", category: "General", score10th: 95.0, score12th: 96.0, entrance: 94.5, merit: 95.05, courseId: "CS101", pref: 1, status: "PENDING", remarks: "Application under review" },
+            { appId: 2, name: "Aarav Sharma", email: "aarav.sharma@example.com", category: "General", score10th: 92.5, score12th: 94.0, entrance: 91.0, merit: 92.20, courseId: "CS101", pref: 1, status: "PENDING", remarks: "Application under review" },
+            { appId: 3, name: "Diya Patel", email: "diya.patel@example.com", category: "OBC", score10th: 88.0, score12th: 89.5, entrance: 86.0, merit: 87.45, courseId: "CS101", pref: 1, status: "PENDING", remarks: "Application under review" },
+            { appId: 4, name: "Pooja Nair", email: "pooja.nair@example.com", category: "OBC", score10th: 82.0, score12th: 85.0, entrance: 81.0, merit: 82.40, courseId: "EC103", pref: 1, status: "PENDING", remarks: "Application under review" },
+            { appId: 5, name: "Rohan Verma", email: "rohan.verma@example.com", category: "General", score10th: 85.0, score12th: 82.0, entrance: 78.0, merit: 80.60, courseId: "IT102", pref: 1, status: "PENDING", remarks: "Application under review" },
+            { appId: 6, name: "Vikram Singh", email: "vikram.singh@example.com", category: "SC", score10th: 76.0, score12th: 74.5, entrance: 72.0, merit: 73.55, courseId: "ME104", pref: 1, status: "PENDING", remarks: "Application under review" }
+        ];
+
+        function saveData() {
+            localStorage.setItem('cams_courses', JSON.stringify(courses));
+            localStorage.setItem('cams_applications', JSON.stringify(applications));
+        }
+
+        // Live Merit Calculation
+        function calculateLiveMerit() {
+            const s10 = parseFloat(document.getElementById('score10th').value) || 0;
+            const s12 = parseFloat(document.getElementById('score12th').value) || 0;
+            const ent = parseFloat(document.getElementById('entranceScore').value) || 0;
+            const merit = (s10 * 0.20) + (s12 * 0.30) + (ent * 0.50);
+            document.getElementById('liveMerit').innerText = merit.toFixed(2) + ' %';
+            return parseFloat(merit.toFixed(2));
+        }
+
+        // Tab Navigation
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            event.currentTarget.classList.add('active');
+            document.getElementById('tab-' + tabId).classList.add('active');
+
+            renderAll();
+        }
+
+        // Toast
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 3500);
+        }
+
+        // Populate Dropdowns
+        function populateCourseDropdowns() {
+            const p1 = document.getElementById('prefCourse1');
+            const p2 = document.getElementById('prefCourse2');
+            p1.innerHTML = '';
+            p2.innerHTML = '<option value="">None</option>';
+
+            courses.forEach(c => {
+                const opt1 = document.createElement('option');
+                opt1.value = c.id;
+                opt1.textContent = `${c.id} - ${c.name} (Cut-off: ${c.cutoff}%)`;
+                p1.appendChild(opt1);
+
+                const opt2 = document.createElement('option');
+                opt2.value = c.id;
+                opt2.textContent = `${c.id} - ${c.name} (Cut-off: ${c.cutoff}%)`;
+                p2.appendChild(opt2);
+            });
+        }
+
+        // Student Registration Submit
+        function handleRegistration(e) {
+            e.preventDefault();
+            const name = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const s10 = parseFloat(document.getElementById('score10th').value);
+            const s12 = parseFloat(document.getElementById('score12th').value);
+            const ent = parseFloat(document.getElementById('entranceScore').value);
+            const merit = calculateLiveMerit();
+            const courseId = document.getElementById('prefCourse1').value;
+            const category = document.getElementById('category').value;
+
+            const newApp = {
+                appId: applications.length + 1,
+                name: name,
+                email: email,
+                category: category,
+                score10th: s10,
+                score12th: s12,
+                entrance: ent,
+                merit: merit,
+                courseId: courseId,
+                pref: 1,
+                status: 'PENDING',
+                remarks: 'Application submitted successfully'
+            };
+
+            applications.push(newApp);
+            saveData();
+            showToast(`Registration Successful! Application #${newApp.appId} created.`);
+            document.getElementById('studentForm').reset();
+            calculateLiveMerit();
+            switchTab('merit');
+        }
+
+        // Render Tables
+        function renderCourses() {
+            const tbody = document.querySelector('#coursesTable tbody');
+            tbody.innerHTML = '';
+            courses.forEach(c => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${c.id}</strong></td>
+                    <td>${c.name}</td>
+                    <td>${c.totalSeats}</td>
+                    <td><span style="font-weight: 700; color: ${c.availableSeats > 0 ? '#059669' : '#dc2626'}">${c.availableSeats}</span></td>
+                    <td><strong>${c.cutoff.toFixed(2)} %</strong></td>
+                    <td>${c.duration} Years</td>
+                    <td>
+                        <button class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;" onclick="editCutoff('${c.id}')">
+                            <i class="fa-solid fa-pen"></i> Edit Cut-off
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function editCutoff(courseId) {
+            const course = courses.find(c => c.id === courseId);
+            const newCutoff = prompt(`Enter new cut-off % for ${course.name}:`, course.cutoff);
+            if (newCutoff !== null && !isNaN(newCutoff)) {
+                course.cutoff = parseFloat(newCutoff);
+                saveData();
+                renderAll();
+                showToast(`Cut-off for ${course.id} updated to ${course.cutoff}%`);
+            }
+        }
+
+        function promptAddCourse() {
+            const id = prompt("Enter Course ID (e.g. AI106):");
+            if (!id) return;
+            const name = prompt("Enter Course Name (e.g. Artificial Intelligence):");
+            if (!name) return;
+            const seats = parseInt(prompt("Total Seats (e.g. 5):") || "5");
+            const cutoff = parseFloat(prompt("Cut-off % (e.g. 85.0):") || "80.0");
+
+            courses.push({ id: id.toUpperCase(), name: name, totalSeats: seats, availableSeats: seats, cutoff: cutoff, duration: 4 });
+            saveData();
+            renderAll();
+            showToast(`Course ${id} added successfully!`);
+        }
+
+        function renderApplications() {
+            const tbody = document.querySelector('#applicationsTable tbody');
+            tbody.innerHTML = '';
+
+            // Sort applications by merit DESC
+            const sorted = [...applications].sort((a, b) => b.merit - a.merit);
+
+            sorted.forEach((a, idx) => {
+                const course = courses.find(c => c.id === a.courseId) || { cutoff: 0 };
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>#${a.appId}</td>
+                    <td><strong>${idx + 1}</strong></td>
+                    <td>${a.name}</td>
+                    <td>${a.category}</td>
+                    <td><strong style="color: var(--primary);">${a.merit.toFixed(2)} %</strong></td>
+                    <td>${a.courseId}</td>
+                    <td>${course.cutoff.toFixed(2)} %</td>
+                    <td><span class="badge badge-${a.status.toLowerCase()}">${a.status}</span></td>
+                    <td style="color: var(--text-muted); font-size: 0.82rem;">${a.remarks}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderAdmin() {
+            const tbody = document.querySelector('#adminTable tbody');
+            tbody.innerHTML = '';
+
+            applications.forEach(a => {
+                const course = courses.find(c => c.id === a.courseId) || { cutoff: 0 };
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>#${a.appId}</td>
+                    <td><strong>${a.name}</strong></td>
+                    <td>${a.category}</td>
+                    <td>${a.courseId}</td>
+                    <td><strong>${a.merit.toFixed(2)} %</strong></td>
+                    <td>${course.cutoff.toFixed(2)} %</td>
+                    <td><span class="badge badge-${a.status.toLowerCase()}">${a.status}</span></td>
+                    <td>
+                        <button class="btn btn-success" style="padding: 0.35rem 0.65rem; font-size: 0.75rem;" onclick="adminDecision(${a.appId}, 'APPROVED')">
+                            <i class="fa-solid fa-check"></i> Approve
+                        </button>
+                        <button class="btn btn-danger" style="padding: 0.35rem 0.65rem; font-size: 0.75rem;" onclick="adminDecision(${a.appId}, 'REJECTED')">
+                            <i class="fa-solid fa-xmark"></i> Reject
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderReports() {
+            const tbody = document.querySelector('#reportsTable tbody');
+            tbody.innerHTML = '';
+
+            const admitted = applications.filter(a => a.status === 'ALLOCATED' || a.status === 'APPROVED');
+            admitted.sort((a, b) => b.merit - a.merit);
+
+            admitted.forEach((a, idx) => {
+                const course = courses.find(c => c.id === a.courseId) || { name: 'Unknown' };
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${idx + 1}</strong></td>
+                    <td>#${a.appId}</td>
+                    <td>${a.name}</td>
+                    <td>${a.category}</td>
+                    <td><strong>${a.courseId}</strong></td>
+                    <td>${course.name}</td>
+                    <td><strong>${a.merit.toFixed(2)} %</strong></td>
+                    <td><span class="badge badge-allocated">${a.status}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function runAutoAllocation() {
+            // Reset seats
+            courses.forEach(c => c.availableSeats = c.totalSeats);
+
+            // Sort applications by merit DESC
+            const sorted = [...applications].sort((a, b) => b.merit - a.merit);
+            let allocated = 0, waitlisted = 0, rejected = 0;
+
+            sorted.forEach(app => {
+                const course = courses.find(c => c.id === app.courseId);
+                if (!course) return;
+
+                if (app.merit >= course.cutoff) {
+                    if (course.availableSeats > 0) {
+                        course.availableSeats--;
+                        app.status = 'ALLOCATED';
+                        app.remarks = `Allocated on Merit (Score ${app.merit}% >= Cutoff ${course.cutoff}%)`;
+                        allocated++;
+                    } else {
+                        app.status = 'WAITLISTED';
+                        app.remarks = `Cutoff met but seats are full`;
+                        waitlisted++;
+                    }
+                } else {
+                    app.status = 'REJECTED';
+                    app.remarks = `Score below Cutoff (${app.merit}% < ${course.cutoff}%)`;
+                    rejected++;
+                }
+            });
+
+            saveData();
+            renderAll();
+            showToast(`Allocation Complete! Allocated: ${allocated}, Waitlisted: ${waitlisted}, Below Cutoff: ${rejected}`);
+            switchTab('reports');
+        }
+
+        function resetAllocations() {
+            courses.forEach(c => c.availableSeats = c.totalSeats);
+            applications.forEach(a => {
+                a.status = 'PENDING';
+                a.remarks = 'Application under review';
+            });
+            saveData();
+            renderAll();
+            showToast('Allocations reset to PENDING.');
+        }
+
+        function adminDecision(appId, decision) {
+            const app = applications.find(a => a.appId === appId);
+            if (!app) return;
+            const course = courses.find(c => c.id === app.courseId);
+
+            if (decision === 'APPROVED') {
+                if (course.availableSeats <= 0) {
+                    if (!confirm("No seats available. Do you want to force approval?")) return;
+                } else {
+                    course.availableSeats--;
+                }
+                app.status = 'APPROVED';
+                app.remarks = 'Manual Administrator Approval';
+            } else {
+                if (app.status === 'APPROVED' || app.status === 'ALLOCATED') {
+                    course.availableSeats++;
+                }
+                app.status = 'REJECTED';
+                app.remarks = 'Rejected by Administrator';
+            }
+
+            saveData();
+            renderAll();
+            showToast(`Application #${appId} updated to ${decision}.`);
+        }
+
+        // CSV Exports
+        function exportAdmissionCSV() {
+            const admitted = applications.filter(a => a.status === 'ALLOCATED' || a.status === 'APPROVED');
+            let csv = "Rank,App ID,Student Name,Email,Category,Course ID,Course Name,Merit Score,Status,Remarks\n";
+            admitted.sort((a, b) => b.merit - a.merit).forEach((a, idx) => {
+                const course = courses.find(c => c.id === a.courseId) || { name: '' };
+                csv += `${idx + 1},${a.appId},"${a.name}","${a.email}","${a.category}","${a.courseId}","${course.name}",${a.merit},"${a.status}","${a.remarks}"\n`;
+            });
+
+            downloadFile(csv, "admission_list.csv", "text/csv");
+        }
+
+        function exportMeritCSV() {
+            const sorted = [...applications].sort((a, b) => b.merit - a.merit);
+            let csv = "Rank,App ID,Student Name,Category,10th Score,12th Score,Entrance Score,Composite Merit Score,Applied Course,Status\n";
+            sorted.forEach((a, idx) => {
+                csv += `${idx + 1},${a.appId},"${a.name}","${a.category}",${a.score10th},${a.score12th},${a.entrance},${a.merit},"${a.courseId}","${a.status}"\n`;
+            });
+
+            downloadFile(csv, "merit_list.csv", "text/csv");
+        }
+
+        function downloadFile(content, fileName, mimeType) {
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast(`Downloaded ${fileName}`);
+        }
+
+        // PDF Export using jsPDF
+        function exportAdmissionPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('l', 'mm', 'a4');
+
+            doc.setFontSize(18);
+            doc.setTextColor(30, 58, 138);
+            doc.text("COLLEGE ADMISSION MANAGEMENT SYSTEM", 148, 18, { align: 'center' });
+
+            doc.setFontSize(11);
+            doc.setTextColor(100, 116, 139);
+            doc.text("Official Course Allocation & Final Admission List", 148, 25, { align: 'center' });
+
+            const admitted = applications.filter(a => a.status === 'ALLOCATED' || a.status === 'APPROVED');
+            admitted.sort((a, b) => b.merit - a.merit);
+
+            const tableRows = admitted.map((a, idx) => {
+                const course = courses.find(c => c.id === a.courseId) || { name: '' };
+                return [idx + 1, "#" + a.appId, a.name, a.category, a.courseId, course.name, a.merit.toFixed(2) + "%", a.status];
+            });
+
+            doc.autoTable({
+                startY: 32,
+                head: [['Rank', 'App ID', 'Student Name', 'Category', 'Course ID', 'Allocated Course', 'Merit %', 'Status']],
+                body: tableRows,
+                theme: 'striped',
+                headStyles: { fillColor: [30, 58, 138], halign: 'center' },
+                columnStyles: {
+                    0: { halign: 'center' },
+                    1: { halign: 'center' },
+                    3: { halign: 'center' },
+                    4: { halign: 'center' },
+                    6: { halign: 'right' },
+                    7: { halign: 'center' }
+                }
+            });
+
+            const finalY = doc.lastAutoTable.finalY + 25;
+            doc.setFontSize(10);
+            doc.setTextColor(30, 41, 59);
+            doc.text("Prepared By: Admissions Office", 20, finalY);
+            doc.text("Approved By: Dean of Academic Affairs\nSignature: _______________________", 200, finalY);
+
+            doc.save("admission_list.pdf");
+            showToast("Official PDF Admission List downloaded!");
+        }
+
+        function renderAll() {
+            populateCourseDropdowns();
+            renderCourses();
+            renderApplications();
+            renderAdmin();
+            renderReports();
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('dob').value = new Date(Date.now() - 18 * 365.25 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+            calculateLiveMerit();
+            renderAll();
+        });
+    </script>
+</body>
+</html>

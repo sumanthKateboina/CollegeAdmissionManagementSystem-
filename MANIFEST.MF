@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: com.college.admission.Main
+Class-Path: lib/mysql-connector-j-8.4.0.jar lib/openpdf-1.3.39.jar lib/sqlite-jdbc-3.45.1.0.jar lib/slf4j-api-2.0.12.jar lib/slf4j-simple-2.0.12.jar
+

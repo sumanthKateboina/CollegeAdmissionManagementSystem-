@@ -1,0 +1,9 @@
+Rank,Student ID,Full Name,Email,Phone,Category,10th Marks,12th Marks,Entrance Score,Composite Merit Score
+1,4,"Ananya Iyer","ananya.iyer@example.com","9876543213","General",95.00,96.00,94.50,95.05
+2,7,"Kavya Reddy","test.applicant.1792088065974@campus.edu","9988776655","General",95.00,92.00,96.00,94.60
+3,8,"Kavya Reddy","test.applicant.1792088402788@campus.edu","9988776655","General",95.00,92.00,96.00,94.60
+4,1,"Aarav Sharma","aarav.sharma@example.com","9876543210","General",92.50,94.00,91.00,92.20
+5,2,"Diya Patel","diya.patel@example.com","9876543211","OBC",88.00,89.50,86.00,87.45
+6,6,"Pooja Nair","pooja.nair@example.com","9876543215","OBC",82.00,85.00,81.00,82.40
+7,3,"Rohan Verma","rohan.verma@example.com","9876543212","General",85.00,82.00,78.00,80.60
+8,5,"Vikram Singh","vikram.singh@example.com","9876543214","SC",76.00,74.50,72.00,73.55

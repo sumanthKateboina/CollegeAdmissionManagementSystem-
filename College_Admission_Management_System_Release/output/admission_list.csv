@@ -1,0 +1,9 @@
+Application ID,Student ID,Student Name,Email,Category,Course ID,Course Name,Merit Score,Cutoff,Status,Remarks
+4,4,"Ananya Iyer","ananya.iyer@example.com","General","CS101","Computer Science & Engineering",95.05,85.00,"APPROVED","Manual Dean approval override"
+7,7,"Kavya Reddy","test.applicant.1792088065974@campus.edu","General","CS101","Computer Science & Engineering",94.60,85.00,"ALLOCATED","Allocated on Merit (Score: 94.60 >= Cutoff: 85.00)"
+9,8,"Kavya Reddy","test.applicant.1792088402788@campus.edu","General","CS101","Computer Science & Engineering",94.60,85.00,"ALLOCATED","Allocated on Merit (Score: 94.60 >= Cutoff: 85.00)"
+1,1,"Aarav Sharma","aarav.sharma@example.com","General","CS101","Computer Science & Engineering",92.20,85.00,"ALLOCATED","Allocated on Merit (Score: 92.20 >= Cutoff: 85.00)"
+2,2,"Diya Patel","diya.patel@example.com","OBC","CS101","Computer Science & Engineering",87.45,85.00,"ALLOCATED","Allocated on Merit (Score: 87.45 >= Cutoff: 85.00)"
+6,6,"Pooja Nair","pooja.nair@example.com","OBC","EC103","Electronics & Communication",82.40,75.00,"ALLOCATED","Allocated on Merit (Score: 82.40 >= Cutoff: 75.00)"
+3,3,"Rohan Verma","rohan.verma@example.com","General","IT102","Information Technology",80.60,80.00,"ALLOCATED","Allocated on Merit (Score: 80.60 >= Cutoff: 80.00)"
+5,5,"Vikram Singh","vikram.singh@example.com","SC","ME104","Mechanical Engineering",73.55,70.00,"ALLOCATED","Allocated on Merit (Score: 73.55 >= Cutoff: 70.00)"
